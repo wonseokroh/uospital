@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from recommendation_sys import views as recommendation_sys_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('recommendation/', recommendation_sys_views.recommendation_page, name='recommendation'),
+    path('recommendation/content/', recommendation_sys_views.recommendation_by_content, name='recommendation-by-content')
 ]
