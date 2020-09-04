@@ -1,12 +1,13 @@
-# uospital
+# UOSPITAL : Personalized Healthcare Recommendation System for AI City
 
-## How to build and run
+## How to run
 
 ```console
-$ python --version
-Python 3.7..
-$ virtualenv venv
-$ source venv/bin/activate
-(venv) $ pip install -r requirements.txt
-(venv) $ python manage.py runserver 0.0.0.0:8000
+docker-compose -f "docker-compose.yml" up -d --build
+```
+
+## How to stop
+
+```console
+docker-compose -f "docker-compose.yml" down
 ```
