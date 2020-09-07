@@ -37,4 +37,9 @@ urlpatterns = [
         recommendation_sys_views.recommendation_by_collaborative,
         name='recommendation-by-collaborative'
     )
+    path(
+        'recommendation/neural/',
+        recommendation_sys_views.recommendation_by_neural_collabo,
+        name='recommendation-by-neural'
+    )
 ]
