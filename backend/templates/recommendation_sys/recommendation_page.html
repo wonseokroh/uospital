@@ -12,15 +12,48 @@
 <body>
 <div style="width: 1280px; margin: auto;">
     <h1 style="margin-top: 20px;">UOSPITAL RECOMMENDATION SYSTEM</h1>
-
-    <div class="ui input">
-      <input id="hospital_name" type="text" placeholder="병원 이름">
+    <div class="ui tabular menu">
+      <a class="item active" onclick="click_recommendtation_menu(1)">
+        CONTENT
+      </a>
+      <a class="item" onclick="click_recommendtation_menu(2)">
+        COLLABORATIVE
+      </a>
     </div>
-    <button class="ui inverted blue button" onclick="recommendation_by_content()">click</button>
-    <div id="result" style="margin-top: 20px;"></div>
+    <div id="recommend_by_content_div">
+        <div class="ui input">
+          <input id="hospital_name" type="text" placeholder="병원 이름">
+        </div>
+        <button class="ui inverted blue button" onclick="recommendation_by_content()">click</button>
+        <div id="result_content" style="margin-top: 20px;"></div>
+    </div>
+    <div id="recommend_by_collaborative_div" style="display: none">
+        <div class="ui input">
+          <input id="user_nickname" type="text" placeholder="유저 이름">
+        </div>
+        <button class="ui inverted green button" onclick="recommendation_by_collaborative()">click</button>
+        <div id="result_collaborative" style="margin-top: 20px;"></div>
+    </div>
 </div>
 </body>
 <script>
+    $(document).ready(function(){
+        $('.ui.menu a.item').on('click', function() {
+            $('.ui.menu a.item').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+
+    function click_recommendtation_menu(menu_num) {
+        if(menu_num == 1){
+            document.getElementById('recommend_by_content_div').style.display = '';
+            document.getElementById('recommend_by_collaborative_div').style.display = 'none';
+        }else if(menu_num == 2){
+            document.getElementById('recommend_by_content_div').style.display = 'none';
+            document.getElementById('recommend_by_collaborative_div').style.display = '';
+        }
+    }
+
     function recommendation_by_content() {
         let formData = new FormData();
         let hospital_name = document.getElementById('hospital_name').value;
@@ -37,8 +70,43 @@
                 let error = data['error'];
                 if (error == 0) {
                     $.LoadingOverlay('hide');
-                    console.log(data['similar_hospitals'])
-                    document.getElementById('result').innerHTML = data['similar_hospitals'];
+                    console.log(data['similar_hospitals']);
+                    document.getElementById('result_content').innerHTML = data['similar_hospitals'];
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("네트워크 오류 발생");
+            },
+            contentType: false,
+            processData: false,
+            dataType: 'json'
+        });
+
+        return
+    }
+
+    function recommendation_by_collaborative() {
+        let formData = new FormData();
+        let user_nickname = document.getElementById('user_nickname').value;
+        formData.append('user_nickname', user_nickname);
+
+        $.LoadingOverlay("show", {
+            text: "추천 병원을 로딩중입니다.",
+            textClass: "loading_text",
+        });
+
+        $.ajax({
+            type: 'POST', url: '/recommendation/collaborative/', data: formData,
+            success: function (data) {
+                let error = data['error'];
+                if (error == 0) {
+                    $.LoadingOverlay('hide');
+                    let top_preds = data['top_preds'];
+                    for(let i=0;i<top_preds['item_id'].length;i++){
+                        console.log(top_preds['item_id'][i])
+                        console.log(top_preds['rating'][i])
+                        document.getElementById('result_collaborative').innerHTML += '<h3>' + (i + 1) + '. ' + top_preds['item_id'][i] + ' [ ' + top_preds['rating'][i] + ' ]' + '</h3>';
+                    }
                 }
             },
             error: function (xhr, status, error) {
