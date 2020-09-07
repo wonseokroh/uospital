@@ -13,3 +13,4 @@ sklearn==0.0
 sqlparse==0.3.1
 threadpoolctl==2.1.0
 surprise==0.1
+tensorflow==2.1.0
