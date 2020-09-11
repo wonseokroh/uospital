@@ -10,10 +10,20 @@ services:
       - .:/frontend
     depends_on:
       - backend
-  backend:
-    build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: uospital
     ports:
-      - "8000:8000"
+      - 3306:3306
+  backend:
+    image: d972b197c1ea # 각 로컬에서 build된 image의 id를 넣는다.
+    environment:
+      - LANG=ko_KR.UTF-8
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
     volumes:
-      - .:/backend
+      - /Users/wonseokroh/Desktop/DevForDano/uospital/backend:/home/app
+    depends_on:
+      - db

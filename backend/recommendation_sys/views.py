@@ -47,6 +47,7 @@ def recommendation_by_collaborative(request):
 	result['error'] = 0
 	return Response(result, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
 def recommendation_by_neural_collabo(request):
 	result = dict()
