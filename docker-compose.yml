@@ -24,6 +24,6 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - /Users/wonseokroh/Desktop/DevForDano/uospital/backend:/home/app
+      - ./backend:/home/app
     depends_on:
       - db
