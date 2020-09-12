@@ -1,16 +1,26 @@
 FROM python:3.7
+ENV PYTHONUNBUFFERED 1
 
-# Set environment variables.
-ENV VENV=/opt/venv
-RUN python -m venv ${VENV}
-ENV PATH="$VENV/bin:$PATH"
+# 메인테이너 정보 (옵션)
+MAINTAINER WSROH <wonseok96@uos.ac.kr>
 
-# Copy backend codes to docker.
-COPY . /usr/src/backend
-WORKDIR /usr/src/backend
+RUN pip install pip --upgrade
 
-# Install dependencies.
-RUN pip install -r requirements.txt
+WORKDIR /home/app
 
-# Open port.
-EXPOSE 8000
+COPY . /home/app
+
+#RUN apk update \
+#    && apk add --virtual build-deps gcc python3-dev musl-dev \
+#    && apk add --no-cache mariadb-dev
+#RUN apk update \
+#    && apk add --upgrade --no-cache \
+#    bash openssh curl ca-certificates openssl less htop \
+#    g++ make wget rsync \
+#    build-base libpng-dev freetype-dev libexecinfo-dev openblas-dev libgomp lapack-dev \
+#    libgcc libquadmath musl  \
+#    libgfortran \
+#    lapack-dev
+RUN pip install -r /home/app/requirements.txt
+#RUN apk del build-deps
+CMD python manage.py runserver 0.0.0.0:8000

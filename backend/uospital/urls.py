@@ -18,7 +18,28 @@ from django.urls import path
 from recommendation_sys import views as recommendation_sys_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('recommendation/', recommendation_sys_views.recommendation_page, name='recommendation'),
-    path('recommendation/content/', recommendation_sys_views.recommendation_by_content, name='recommendation-by-content')
+    path(
+        'admin/',
+        admin.site.urls
+    ),
+    path(
+        'recommendation/',
+        recommendation_sys_views.recommendation_page,
+        name='recommendation'
+    ),
+    path(
+        'recommendation/content/',
+        recommendation_sys_views.recommendation_by_content,
+        name='recommendation-by-content'
+    ),
+    path(
+        'recommendation/collaborative/',
+        recommendation_sys_views.recommendation_by_collaborative,
+        name='recommendation-by-collaborative'
+    ),
+    path(
+        'recommendation/neural/',
+        recommendation_sys_views.recommendation_by_neural_collabo,
+        name='recommendation-by-neural'
+    )
 ]
