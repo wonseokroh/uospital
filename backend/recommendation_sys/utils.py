@@ -31,9 +31,16 @@ def find_sim_hospital(df, sorted_ind, title_name, top_n=10):
 	title_index = title_hospital.index.values
 	similar_indexes = sorted_ind[title_index, :top_n]
 
-	print(similar_indexes)
 	similar_indexes = similar_indexes.reshape(-1)
-	return df.iloc[similar_indexes].to_html()
+	similar_hospitals_dict = df.iloc[similar_indexes].to_dict()
+	similar_hospitals = dict()
+	for key, value in similar_hospitals_dict.items():
+		for idx, data in value.items():
+			if idx not in similar_hospitals:
+				similar_hospitals[idx] = dict()
+			similar_hospitals[idx][key] = data
+
+	return similar_hospitals
 
 
 def collaborative_data():
@@ -116,7 +123,7 @@ def recomm_hospital_by_neural(user_id):
 	ratings = ratings[['user_id', 'item_id', 'rating']]
 	hospitals["item_id"] = hospitals["index"]
 
-	model = load_model(path="./pretrained/model.h5")
+	model = load_pretrained_model()
 	user2user_encoded, userencoded2user, item2item_encoded, item_encoded2item = _encode_rating(ratings)
 
 	items_watched_by_user = ratings[ratings.user_id == user_id]
