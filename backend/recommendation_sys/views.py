@@ -7,7 +7,7 @@ from recommendation_sys.utils import content_data, find_sim_hospital, get_unseen
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from django.core.cache import cache
 
 def recommendation_page(request):
 	if request.method == "GET":
@@ -39,7 +39,17 @@ def recommendation_by_collaborative(request):
 	result['error'] = -1
 
 	user_nickname = request.POST.get('user_nickname')
-	ratings, hospitals, svdpp = collaborative_data()
+	ratings = cache.get("collaborative_ratings")
+	hospitals = cache.get("collaborative_hospitals")
+	svdpp = cache.get("collaborative_svdpp")
+
+	if ratings is None or hospitals is None or svdpp is None:
+		cache_time = 60 * 60 * 24 * 4
+		ratings, hospitals, svdpp = collaborative_data()
+		cache.set("collaborative_ratings", ratings, cache_time)
+		cache.set("collaborative_hospitals", hospitals, cache_time)
+		cache.set("collaborative_svdpp", svdpp, cache_time)
+
 	unseen_hospitals = get_unseen_surprise(ratings, hospitals, user_nickname)
 	top_preds = recomm_hospital_by_surprise(svdpp, user_nickname, unseen_hospitals, top_n=10)
 
